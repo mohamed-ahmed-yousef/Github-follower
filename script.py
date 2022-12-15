@@ -1,19 +1,16 @@
 # Imports
-import requests, os, csv
-from dotenv import load_dotenv
+import requests, csv
+from tqdm import tqdm
+
 # -----------------------------------------------------------
 # Reading Operation
+token=input("here https://github.com/settings/tokens -> generate new token and allow user:follow then PASTE TOKEN here: ")
 fileName=input("Input Your CSV File,Please make Sure it's in the current director : ")
 choosen=input("Enter Which roles You Want : CS or Ras or All : ")
 choosen=choosen.strip().lower()
-# --------------------------------------------------------------
-# Code Initialization 
-load_dotenv()
-token = os.getenv('token')
 # -------------------------------------------------
 # Follow Code
 def follow_me(peopleToFollow):
-    print(peopleToFollow)
     headers = {'Authorization': 'token ' + token}
     requests.put(f'https://api.github.com/user/following/{peopleToFollow}',headers=headers)
 
@@ -36,7 +33,7 @@ if numberOfRoles!=numberOfUsers:
 followed = {}
 count = 0
 
-for i in range(numberOfRoles):
+for i in tqdm(range(numberOfRoles)):
     
     if roles[i].lower()==choosen or choosen=="all":
     
@@ -56,7 +53,7 @@ for i in range(numberOfRoles):
             count +=1
         
         
-print(f'{count} People has been followed!')
+print(f'{count} People has been followed! 🥳')
 # ---------------------------------------------------
 # Final of Our Script 👌
 # I Hope it Will Help you 😊
