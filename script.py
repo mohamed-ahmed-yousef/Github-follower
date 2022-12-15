@@ -4,11 +4,9 @@ from tqdm import tqdm
 
 # -----------------------------------------------------------
 # Reading Operation
-token=input("here https://github.com/settings/tokens -> generate new token and allow user:follow then PASTE TOKEN here: ")
-fileName=input("Input Your CSV File,Please make Sure it's in the current director : ")
-choosen=input("Enter Which roles You Want : CS or Ras or All : ").strip().lower()
-followOrNot = input("Enter What You Want to Do :\"follow\" or \"unfollow\" : ")
-followOrNot = followOrNot.strip().lower()
+token=input("\nhere https://github.com/settings/tokens -> generate new token\n and allow user:follow then PASTE TOKEN here: ")
+print("\nPlease Make a sure that CSV file and Script.js file in the Same Folder 😄 ")
+fileName=input("Input Your CSV File : ")
 
 # File Path Handling
 currentRunningPyFile = __file__
@@ -49,6 +47,11 @@ numberOfUsers=len(userName)
 if numberOfRoles!=numberOfUsers:
     print("Error: Must userName Numbers Equal Roles Numbers")
     quit()
+
+# Roles
+choosen=input("Enter Which ones You Want to follow or not follow : CS or Ras or All : ").strip().lower()
+followOrNot = input("Enter What You Want to Do :\"follow\" or \"unfollow\" : ").strip().lower()
+
 
 followed = {}
 count = 0
