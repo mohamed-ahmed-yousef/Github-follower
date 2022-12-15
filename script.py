@@ -1,27 +1,47 @@
 # Imports
-import requests, csv
+import requests, csv,os
 from tqdm import tqdm
 
 # -----------------------------------------------------------
 # Reading Operation
 token=input("here https://github.com/settings/tokens -> generate new token and allow user:follow then PASTE TOKEN here: ")
 fileName=input("Input Your CSV File,Please make Sure it's in the current director : ")
-choosen=input("Enter Which roles You Want : CS or Ras or All : ")
-choosen=choosen.strip().lower()
+choosen=input("Enter Which roles You Want : CS or Ras or All : ").strip().lower()
+followOrNot = input("Enter What You Want to Do :\"follow\" or \"unfollow\" : ")
+followOrNot = followOrNot.strip().lower()
+
+# File Path Handling
+currentRunningPyFile = __file__
+toRemoveFromPath = os.path.basename(__file__)
+lenghtOfRunningFile = len(toRemoveFromPath)
+lengthOfCompletePath = len(currentRunningPyFile)
+currentRunningPyFile = currentRunningPyFile[:lengthOfCompletePath-lenghtOfRunningFile]
+fileName = currentRunningPyFile+fileName
+
 # -------------------------------------------------
 # Follow Code
 def follow_me(peopleToFollow):
     headers = {'Authorization': 'token ' + token}
     requests.put(f'https://api.github.com/user/following/{peopleToFollow}',headers=headers)
 
-# Main Code
-with open(f'./{fileName}') as f:
-    reader = csv.DictReader(f)
-    roles = [line1['role'] for line1 in reader]
+# unFollow Code
+def not_follow_me(peopleToFollow):
+    headers = {'Authorization': 'token ' + token}
+    requests.delete(
+        f'https://api.github.com/user/following/{peopleToFollow}', headers=headers)
 
-with open(f'./{fileName}') as f:
-    reader = csv.DictReader(f)
-    userName=[line2['GitHub link'] for line2 in reader]
+# Read Code
+try:
+    with open(f'{fileName}') as f:
+        reader = csv.DictReader(f)
+        roles = [line1['role'] for line1 in reader]
+
+    with open(f'{fileName}') as f:
+        reader = csv.DictReader(f)
+        userName = [line2['GitHub link'] for line2 in reader]
+except:
+    print("\n AGAIN,Please Make CSV File and Script.py File in The Same Folder and Enter Only a CORRECT File Name 😊 \n")
+    quit()
 
 numberOfRoles=len(roles)
 numberOfUsers=len(userName)
@@ -33,27 +53,48 @@ if numberOfRoles!=numberOfUsers:
 followed = {}
 count = 0
 
-for i in tqdm(range(numberOfRoles)):
-    
-    if roles[i].lower()==choosen or choosen=="all":
-    
-        s=userName[i]
-        x=s.find("github.com/")+len("github.com/")
-        ans=""
+if followOrNot == "follow":
+    for i in tqdm(range(numberOfRoles)):
+        if roles[i].lower() == choosen or choosen == "all":
+            s = userName[i]
+            x = s.find("github.com/")+len("github.com/")
+            ans = ""
+
+            for j in range(x, len(s)):
+                if s[j] != "/":
+                    ans += s[j]
+                else:
+                    break
+
+            if followed.get(ans) is None:
+                follow_me(ans)
+                followed[ans] = True
+                count +=1
+
+elif followOrNot == "unfollow":
+    for i in tqdm(range(numberOfRoles)):
+        if roles[i].lower() == choosen or choosen == "all":
+            s = userName[i]
+            x = s.find("github.com/")+len("github.com/")
+            ans = ""
+
+            for j in range(x, len(s)):
+                if s[j] != "/":
+                    ans += s[j]
+                else:
+                    break
+            
+
+            if followed.get(ans) is None:
+                not_follow_me(ans)
+                followed[ans] = True
+                count +=1
+else:
+    print("Please : Enter A Correct Action \"follow\" or \"unfollow\"")
+
         
-        for  j in range(x,len(s)):
-            if s[j]!="/":
-                ans += s[j]
-            else:
-                break
         
-        if followed.get(ans) is None:
-            follow_me(ans)
-            followed[ans] = True
-            count +=1
-        
-        
-print(f'{count} People has been followed! 🥳')
+print(f'{count} People has been {followOrNot}ed 🥳')
 # ---------------------------------------------------
 # Final of Our Script 👌
 # I Hope it Will Help you 😊
