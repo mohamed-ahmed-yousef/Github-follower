@@ -1,5 +1,6 @@
 # Imports
 import requests, csv,os
+from time import sleep
 from tqdm import tqdm
 
 # -----------------------------------------------------------
@@ -20,13 +21,15 @@ fileName = currentRunningPyFile+fileName
 # Follow Code
 def follow_me(peopleToFollow):
     headers = {'Authorization': 'token ' + token}
-    requests.put(f'https://api.github.com/user/following/{peopleToFollow}',headers=headers)
+    response =requests.put(f'https://api.github.com/user/following/{peopleToFollow}',headers=headers)
+    return response
 
 # unFollow Code
 def not_follow_me(peopleToFollow):
     headers = {'Authorization': 'token ' + token}
-    requests.delete(
+    response =requests.delete(
         f'https://api.github.com/user/following/{peopleToFollow}', headers=headers)
+    return response
 
 # Read Code
 try:
@@ -59,23 +62,27 @@ count = 0
 if followOrNot == "follow":
     for i in tqdm(range(numberOfRoles)):
         if roles[i].lower() == choosen or choosen == "all":
+            sleep(1.2)
             s = userName[i]
             x = s.find("github.com/")+len("github.com/")
             ans = ""
-
+            
             for j in range(x, len(s)):
                 if s[j] != "/":
                     ans += s[j]
                 else:
                     break
-
+        
             if followed.get(ans) is None:
-                follow_me(ans)
-                followed[ans] = True
-                count +=1
+                
+                response = follow_me(ans)
+                if response.status_code == 204:
+                    followed[ans] = True
+                    count +=1
 
 elif followOrNot == "unfollow":
     for i in tqdm(range(numberOfRoles)):
+        sleep(1.2)
         if roles[i].lower() == choosen or choosen == "all":
             s = userName[i]
             x = s.find("github.com/")+len("github.com/")
@@ -89,9 +96,10 @@ elif followOrNot == "unfollow":
             
 
             if followed.get(ans) is None:
-                not_follow_me(ans)
-                followed[ans] = True
-                count +=1
+                response = not_follow_me(ans)
+                if response.status_code == 204:
+                    followed[ans] = True
+                    count +=1
 else:
     print("Please : Enter A Correct Action \"follow\" or \"unfollow\"")
 
