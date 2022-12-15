@@ -95,8 +95,6 @@ elif followOrNot == "unfollow":
 else:
     print("Please : Enter A Correct Action \"follow\" or \"unfollow\"")
 
-        
-        
 print(f'{count} People has been {followOrNot}ed 🥳')
 # ---------------------------------------------------
 # Final of Our Script 👌
