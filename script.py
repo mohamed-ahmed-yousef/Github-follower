@@ -33,21 +33,30 @@ if numberOfRoles!=numberOfUsers:
     print("Error: Must userName Numbers Equal Roles Numbers")
     quit()
 
+followed = {}
+count = 0
+
 for i in range(numberOfRoles):
-    if roles[i]==choosen or choosen=="all":
+    
+    if roles[i].lower()==choosen or choosen=="all":
+    
         s=userName[i]
         x=s.find("github.com/")+len("github.com/")
         ans=""
-
+        
         for  j in range(x,len(s)):
             if s[j]!="/":
                 ans += s[j]
             else:
                 break
-
-        follow_me(ans)
         
-    
+        if followed.get(ans) is None:
+            follow_me(ans)
+            followed[ans] = True
+            count +=1
+        
+        
+print(f'{count} People has been followed!')
 # ---------------------------------------------------
 # Final of Our Script 👌
 # I Hope it Will Help you 😊
